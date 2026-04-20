@@ -1,0 +1,52 @@
+# 配置文件
+config/*.yaml
+config/*.yml
+config/*.json
+config/*.toml
+
+# 环境变量
+.env
+.env.local
+.env.production
+
+# 日志文件
+logs/
+*.log
+
+# 原始采集数据（可按需保留部分样本）
+knowledge/raw/
+
+# 分析后的知识条目（可按需保留部分样本）
+knowledge/articles/
+
+# Python 相关
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE 文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 操作系统文件
+.DS_Store
+Thumbs.db

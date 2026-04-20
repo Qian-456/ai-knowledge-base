@@ -17,7 +17,8 @@ AI 知识库助手是一个自动化系统，用于从 GitHub Trending 和 Hacke
 3. **日志输出**: 禁止使用裸 `print()`，统一使用 `loguru` 模块
 4. **错误处理**: 使用明确的异常类型，避免裸露的 `except`
 5. **类型注解**: 推荐使用 Python 类型注解提高代码可读性
-6. **导入顺序**: 标准库 → 第三方库 → 本地模块，每组之间空一行
+ 6. **导入顺序**: 标准库 → 第三方库 → 本地模块，每组之间空一行
+ 7. **语言规范**: 日志和代码注释优先使用中文，除非是英文专有名词、技术术语或缩写
 
 ## 项目结构
 ```
@@ -37,10 +38,11 @@ AI 知识库助手是一个自动化系统，用于从 GitHub Trending 和 Hacke
 │       └── notification/
 │           └── SKILL.md
 ├── knowledge/
-│   ├── raw/             # 原始采集数据 (JSON 格式)
-│   │   ├── github/
-│   │   └── hackernews/
-│   └── articles/        # 分析后的结构化知识条目
+│   ├── raw/             # 原始采集数据 (JSON 格式，按日期命名)
+│   │   ├── github-trending-YYYY-MM-DD.json
+│   │   ├── hackernews-YYYY-MM-DD.json
+│   │   └── ...
+│   └── articles/        # 分析后的结构化知识条目 (JSON 格式)
 ├── config/              # 配置文件
 ├── logs/                # 日志文件
 ├── tests/               # 单元测试
@@ -57,12 +59,12 @@ AI 知识库助手是一个自动化系统，用于从 GitHub Trending 和 Hacke
   "summary": "AI 生成的摘要 (200-300 字)",
   "key_points": ["要点1", "要点2", "要点3"],
   "tags": ["llm", "agent", "framework", "tool"],
-  "technical_level": "beginner | intermediate | advanced",
+  "technical_level": "初级 | 中级 | 高级",
   "language": "zh | en",
   "published_at": "YYYY-MM-DD HH:MM:SS",
   "collected_at": "YYYY-MM-DD HH:MM:SS",
   "analyzed_at": "YYYY-MM-DD HH:MM:SS",
-  "status": "collected | analyzed | curated | published",
+  "status": "已采集 | 已分析 | 已整理 | 已发布",
   "metadata": {
     "github_stars": 1234,
     "hackernews_score": 42,
@@ -90,9 +92,73 @@ AI 知识库助手是一个自动化系统，用于从 GitHub Trending 和 Hacke
 3. **禁止未经处理的异常**: 所有网络请求、文件操作必须有适当的错误处理
 4. **禁止覆盖已有数据**: 写入文件时必须检查目标文件是否存在，避免意外覆盖
 5. **禁止高频请求**: 采集时必须遵守目标网站的 robots.txt 和频率限制
-6. **禁止分发未审核内容**: 所有推送的内容必须经过整理器审核，状态为 `curated` 或 `published`
+6. **禁止分发未审核内容**: 所有推送的内容必须经过整理器审核，状态为 `已整理` 或 `已发布`
 7. **禁止在代码中写死路径**: 使用相对路径或配置化的绝对路径
 8. **禁止在 Agent 中写死模型名称**: 模型配置应通过外部配置管理
+
+## Git 忽略配置
+
+为防止敏感数据和中间文件泄露到版本控制系统，应在项目根目录创建 `.gitignore` 文件，包含以下内容：
+
+```gitignore
+# 配置文件
+config/*.yaml
+config/*.yml
+config/*.json
+config/*.toml
+
+# 环境变量
+.env
+.env.local
+.env.production
+
+# 日志文件
+logs/
+*.log
+
+# 原始采集数据（可按需保留部分样本）
+knowledge/raw/
+
+# 分析后的知识条目（可按需保留部分样本）
+knowledge/articles/
+
+# Python 相关
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDE 文件
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+```
+
+**重要说明**：
+- 原始数据 (`knowledge/raw/`) 通常不应提交到版本控制，仅保留分析后的结构化知识 (`knowledge/articles/`) 中的示例文件
+- 配置文件应提供示例模板 (`config/example.yaml`)，实际配置通过环境变量管理
+- 日志文件应实时产生，无需版本控制
 
 ## 后续扩展方向
 - 增加更多数据源 (arXiv、Twitter、Reddit)
